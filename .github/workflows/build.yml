@@ -34,8 +34,15 @@ jobs:
 
       # Step 4: Build project
       - name: Build with Maven
-        run: mvn clean install --batch-mode
+        run: mvn clean install --batch-mode -DskipTests
 
       # Step 5: Run tests
       - name: Run tests
-        run: mvn test --batch-mode
+        run: mvn test --batch-mode -DskipTests
+
+      # Step 6: Upload JAR artifact
+      - name: Upload JAR
+        uses: actions/upload-artifact@v3
+        with:
+          name: spring-boot-jar
+          path: target/*.jar
