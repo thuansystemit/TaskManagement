@@ -11,46 +11,44 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 
 @Component
-public class JwtAuthFilter implements Filter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Value("${jwt.secret}")
     private String secretKey;
 
-    // Exclude login/register endpoints
-    private static final List<String> EXCLUDE_URLS = List.of(
-            "/api/auth/login",
-            "/api/auth/register"
-    );
-
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain) throws ServletException, IOException {
 
-        HttpServletRequest httpReq = (HttpServletRequest) request;
-        HttpServletResponse httpRes = (HttpServletResponse) response;
+        String path = request.getServletPath();
 
-        String path = httpReq.getRequestURI();
-
-        // Skip JWT check for excluded URLs
-        if (EXCLUDE_URLS.stream().anyMatch(path::startsWith)) {
-            chain.doFilter(request, response);
+        // Skip JWT validation for public endpoints
+        if (path.startsWith("/api/auth")
+                || path.startsWith("/api/user/register")
+                || path.startsWith("/api/users")) {
+            filterChain.doFilter(request, response);
             return;
         }
+        String authHeader = request.getHeader("Authorization");
 
-        String authHeader = httpReq.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            httpRes.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpRes.getWriter().write("Missing or invalid Authorization header");
+            filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7); // remove "Bearer "
+        String token = authHeader.substring(7);
 
         try {
             Claims claims = Jwts.parserBuilder()
@@ -59,15 +57,22 @@ public class JwtAuthFilter implements Filter {
                     .parseClaimsJws(token)
                     .getBody();
 
-            // Optional: pass user info to downstream services
-            httpReq.setAttribute("userId", claims.getSubject());
-            httpReq.setAttribute("role", claims.get("role"));
+            // Optionally set user info
+            request.setAttribute("userName", claims.getSubject());
+            request.setAttribute("role", claims.get("role"));
+            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + claims.get("role")));
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(claims.getSubject(), null, authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
         } catch (Exception e) {
-            httpRes.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            httpRes.getWriter().write("Invalid or expired token");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid or expired token");
             return;
         }
 
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }

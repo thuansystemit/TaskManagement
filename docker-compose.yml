@@ -1,0 +1,39 @@
+services:
+  user_service_db:
+    image: mysql:8.1
+    container_name: user_service_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user_service_db
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: password
+    volumes:
+      - user-service-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  task_service_db:
+    image: mysql:8.1
+    container_name: task_service_db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: task_service_db
+      MYSQL_USER: user1
+      MYSQL_PASSWORD: password
+    volumes:
+      - task-service-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  user-service-data:
+  task-service-data:

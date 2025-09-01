@@ -38,12 +38,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<Task> getTasksByUser(Long userId) {
+    public List<Task> getTasksByUser(String userId) {
         return taskRepository.findByUserId(userId);
     }
 
     @Override
-    public List<Task> getTasksByUserAndStatus(Long userId, TaskStatusEnum status) {
+    public List<Task> getTasksByUserAndStatus(String userId, TaskStatusEnum status) {
         return taskRepository.findByUserIdAndStatus(userId, status);
     }
 }

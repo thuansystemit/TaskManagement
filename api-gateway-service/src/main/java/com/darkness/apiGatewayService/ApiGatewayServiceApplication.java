@@ -1,11 +1,26 @@
 package com.darkness.apiGatewayService;
 
+import com.darkness.apiGatewayService.config.SecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
+
+import java.security.SecureRandom;
+import java.util.Base64;
 
 @SpringBootApplication
+@Import(value = {SecurityConfig.class})
 public class ApiGatewayServiceApplication {
     public static void main(String []args) {
+        generateKey();
         SpringApplication.run(ApiGatewayServiceApplication.class, args);
+    }
+
+    private static void generateKey() {
+        SecureRandom random = new SecureRandom();
+        byte[] key = new byte[32]; // 256-bit key for HS256
+        random.nextBytes(key);
+        String secret = Base64.getEncoder().encodeToString(key);
+        System.out.println("Generated Secret Key: " + secret);
     }
 }

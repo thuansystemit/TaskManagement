@@ -8,25 +8,18 @@
         <artifactId>task-management</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <name>User Service</name>
-    <artifactId>user-service</artifactId>
-
+    <name>task-management-commons</name>
+    <artifactId>task-management-commons</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>db</module>
+        <module>jwttoken</module>
+        <module>security</module>
+    </modules>
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.darkness</groupId>
-            <artifactId>task-management-commons-db</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.darkness</groupId>
-            <artifactId>task-management-commons-jwttoken</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 </project>

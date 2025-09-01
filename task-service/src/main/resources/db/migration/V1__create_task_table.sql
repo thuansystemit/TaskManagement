@@ -6,7 +6,7 @@ CREATE TABLE task (
     status int(3) NOT NULL,
     priority int(3) NOT NULL,
     due_date TIMESTAMP,
-    user_fk BIGINT NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

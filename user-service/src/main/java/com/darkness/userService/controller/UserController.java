@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -24,8 +24,9 @@ public class UserController {
         this.userService = userService;
     }
     // Create a new user
-    @PostMapping
+    @PostMapping("register")
     public ResponseEntity<User> createUser(@RequestBody User user) {
+        System.out.println("call here -------------------------");
         User createdUser = userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }

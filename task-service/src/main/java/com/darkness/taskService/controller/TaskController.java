@@ -2,6 +2,7 @@ package com.darkness.taskService.controller;
 
 import com.darkness.taskService.domain.Task;
 import com.darkness.taskService.service.TaskService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,7 +29,7 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<Task> getTasks(@RequestParam Long userId) {
+    public List<Task> getTasks(@RequestParam String userId) {
         return taskService.getTasksByUser(userId);
     }
 
@@ -40,5 +41,11 @@ public class TaskController {
     @DeleteMapping("/{id}")
     public void deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
+    }
+
+
+    @GetMapping("hello")
+    public String hello() {
+        return "hello task controller";
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,6 +21,8 @@ public class UserServiceImpl implements UserService {
         if (Objects.isNull(user.getUserRole())) {
             user.setUserRole(UserRoleEnum.USER);
         }
+        String userId = UUID.randomUUID().toString();
+        user.setUserId("UserId-" + userId);
         return userRepository.save(user);
     }
 
