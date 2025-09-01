@@ -11,7 +11,8 @@
 	<groupId>com.darkness</groupId>
 	<artifactId>task-management</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>Task Management</name>
+    <packaging>pom</packaging>
+    <name>Task Management</name>
 	<description>Task Management project for Spring Boot</description>
 	<url/>
 	<licenses>
@@ -20,7 +21,11 @@
 	<developers>
 		<developer/>
 	</developers>
-	<scm>
+    <modules>
+        <module>user-service</module>
+        <module>task-service</module>
+    </modules>
+    <scm>
 		<connection/>
 		<developerConnection/>
 		<tag/>
