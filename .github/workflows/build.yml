@@ -41,8 +41,13 @@ jobs:
         run: mvn test --batch-mode -DskipTests
 
       # Step 6: Upload JAR artifact
-      - name: Upload JAR
+      - name: Upload task-service JAR
         uses: actions/upload-artifact@v4
         with:
-          name: spring-boot-jar
-          path: target/*.jar
+          name: task-service-jar
+          path: task-service/target/*.jar
+      - name: Upload user-service JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: user-service-jar
+          path: user-service/target/*.jar
