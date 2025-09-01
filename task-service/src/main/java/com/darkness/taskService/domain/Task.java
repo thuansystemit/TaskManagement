@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private Long pk;
+    private String taskId;
     private String title;
     private String description;
 
