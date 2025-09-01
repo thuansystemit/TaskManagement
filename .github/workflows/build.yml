@@ -51,3 +51,8 @@ jobs:
         with:
           name: user-service
           path: user-service/target/*.jar
+      - name: Upload api-gateway-service JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-gateway-service
+          path: api-gateway-service/target/*.jar
