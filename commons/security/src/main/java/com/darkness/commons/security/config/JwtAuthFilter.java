@@ -1,4 +1,4 @@
-package com.darkness.apiGatewayService.filter;
+package com.darkness.commons.security.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -33,8 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // Skip JWT validation for public endpoints
         if (path.startsWith("/api/auth")
-                || path.startsWith("/api/user/register")
-                || path.startsWith("/api/user")) {
+                || path.startsWith("/api/user/register")) {
             filterChain.doFilter(request, response);
             return;
         }

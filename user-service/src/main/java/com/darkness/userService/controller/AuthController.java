@@ -1,10 +1,12 @@
 package com.darkness.userService.controller;
 
 import com.darkness.commons.security.utils.PasswordUtils;
-import com.darkness.mvc.controller.BaseController;
 import com.darkness.userService.common.JwtUtil;
+import com.darkness.userService.domain.RefreshToken;
 import com.darkness.userService.domain.User;
+import com.darkness.userService.dto.TokenRefreshRequestDto;
 import com.darkness.userService.exception.UserNotFoundException;
+import com.darkness.userService.service.RefreshTokenService;
 import com.darkness.userService.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -22,14 +24,17 @@ public class AuthController extends UserExceptionController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final PasswordUtils passwordUtils;
+    private final RefreshTokenService refreshTokenService;
     public AuthController(final UserService userService,
                           final JwtUtil jwtUtil,
-                          final PasswordUtils passwordUtils) {
+                          final PasswordUtils passwordUtils,
+                          final RefreshTokenService refreshTokenService) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.passwordUtils = passwordUtils;
+        this.refreshTokenService = refreshTokenService;
     }
-    @PostMapping("/login")
+    @PostMapping("login")
     public ResponseEntity<Map<String, String>> login(
             @RequestBody Map<String, String> request) {
         String email = request.get("email");
@@ -41,7 +46,39 @@ public class AuthController extends UserExceptionController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        String token = jwtUtil.generateToken(user);
-        return ResponseEntity.ok(Collections.singletonMap("token", token));
+        String accessToken = jwtUtil.generateToken(user.getEmail(), user.getUserRole().name());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail(), user.getUserRole().name());
+        refreshTokenService.save(refreshToken, user);
+        Map<String, String> authenResponse = new HashMap<>();
+        authenResponse.put("accessToken", accessToken);
+        authenResponse.put("refreshToken", refreshToken);
+        return ResponseEntity.ok(authenResponse);
+    }
+
+    @PostMapping("refresh")
+    public ResponseEntity<Map<String, String>> refresh(
+            @RequestBody TokenRefreshRequestDto request) {
+        return refreshTokenService.findByToken(request.getRefreshToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String newAccessToken = jwtUtil.generateToken(
+                            user.getEmail(), user.getUserRole().name());
+                    String newRefreshToken = jwtUtil.generateRefreshToken(
+                            user.getName(), user.getUserRole().name());
+                    refreshTokenService.save(newRefreshToken, user);
+                    Map<String, String> authenResponse = new HashMap<>();
+                    authenResponse.put("accessToken", newAccessToken);
+                    authenResponse.put("refreshToken", newRefreshToken);
+                    return ResponseEntity.ok(authenResponse);
+                })
+                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+    }
+
+    @PostMapping("logout")
+    public ResponseEntity<Void> logout(@RequestBody TokenRefreshRequestDto request) {
+        refreshTokenService.findByToken(request.getRefreshToken())
+                .ifPresent(refreshTokenService::revokeToken);
+        return ResponseEntity.ok().build();
     }
 }
