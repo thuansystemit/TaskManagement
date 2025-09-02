@@ -1,5 +1,6 @@
 package com.darkness.taskService.controller;
 
+import com.darkness.mvc.controller.BaseController;
 import com.darkness.taskService.domain.Task;
 import com.darkness.taskService.service.TaskService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/task")
-public class TaskController {
+public class TaskController extends BaseController {
     private final TaskService taskService;
     public TaskController(final TaskService taskService) {
         this.taskService = taskService;

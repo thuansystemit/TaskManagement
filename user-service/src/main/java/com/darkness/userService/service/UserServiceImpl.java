@@ -1,4 +1,5 @@
 package com.darkness.userService.service;
+import com.darkness.commons.security.utils.PasswordUtils;
 import com.darkness.userService.domain.User;
 import com.darkness.userService.domain.UserRoleEnum;
 import com.darkness.userService.repository.UserRepository;
@@ -12,9 +13,12 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final PasswordUtils passwordUtils;
 
-    public UserServiceImpl(final UserRepository userRepository) {
+    public UserServiceImpl(final UserRepository userRepository,
+                           final PasswordUtils passwordUtils) {
         this.userRepository = userRepository;
+        this.passwordUtils = passwordUtils;
     }
     @Override
     public User createUser(User user) {
@@ -23,6 +27,8 @@ public class UserServiceImpl implements UserService {
         }
         String userId = UUID.randomUUID().toString();
         user.setUserId("UserId-" + userId);
+        String password = user.getPassword();
+        user.setPassword(passwordUtils.encodePassword(password));
         return userRepository.save(user);
     }
 

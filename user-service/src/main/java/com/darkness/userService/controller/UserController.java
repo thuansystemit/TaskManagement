@@ -1,4 +1,5 @@
 package com.darkness.userService.controller;
+import com.darkness.mvc.controller.BaseController;
 import com.darkness.userService.domain.User;
 import com.darkness.userService.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class UserController extends UserExceptionController {
 
     private final UserService userService;
 
@@ -61,7 +62,7 @@ public class UserController {
                 .map(existing -> {
                     existing.setName(user.getName());
                     existing.setEmail(user.getEmail());
-                    existing.setPassword(user.getPassword()); // Optional: encode password
+                    existing.setPassword(user.getPassword());
                     User updatedUser = userService.createUser(existing);
                     return ResponseEntity.ok(updatedUser);
                 })
