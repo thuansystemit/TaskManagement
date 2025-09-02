@@ -1,12 +1,14 @@
 package com.darkness.userService.controller;
 
 import com.darkness.commons.security.utils.PasswordUtils;
-import com.darkness.userService.common.JwtUtil;
+import com.darkness.commons.jwttoken.JwtUtil;
 import com.darkness.userService.domain.RefreshToken;
 import com.darkness.userService.domain.User;
 import com.darkness.userService.dto.TokenRefreshRequestDto;
 import com.darkness.userService.exception.UserNotFoundException;
 import com.darkness.userService.service.RefreshTokenService;
+import com.darkness.userService.service.TokenBlacklistService;
+import com.darkness.userService.service.TokenBlacklistServiceImpl;
 import com.darkness.userService.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,14 +27,17 @@ public class AuthController extends UserExceptionController {
     private final JwtUtil jwtUtil;
     private final PasswordUtils passwordUtils;
     private final RefreshTokenService refreshTokenService;
+    private final TokenBlacklistService tokenBlacklistService;
     public AuthController(final UserService userService,
                           final JwtUtil jwtUtil,
                           final PasswordUtils passwordUtils,
-                          final RefreshTokenService refreshTokenService) {
+                          final RefreshTokenService refreshTokenService,
+                          final TokenBlacklistService tokenBlacklistService) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.passwordUtils = passwordUtils;
         this.refreshTokenService = refreshTokenService;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
     @PostMapping("login")
     public ResponseEntity<Map<String, String>> login(
@@ -79,6 +84,7 @@ public class AuthController extends UserExceptionController {
     public ResponseEntity<Void> logout(@RequestBody TokenRefreshRequestDto request) {
         refreshTokenService.findByToken(request.getRefreshToken())
                 .ifPresent(refreshTokenService::revokeToken);
+        tokenBlacklistService.blacklistToken(request.getAccessToken());
         return ResponseEntity.ok().build();
     }
 }

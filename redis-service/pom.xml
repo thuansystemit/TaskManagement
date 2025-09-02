@@ -5,38 +5,34 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.darkness</groupId>
-        <artifactId>task-management-commons</artifactId>
+        <artifactId>task-management</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <name>Task Management Commons JwtToken</name>
-    <artifactId>task-management-commons-jwttoken</artifactId>
+    <name>Task Management Redis Service</name>
+    <artifactId>task-management-redis-service</artifactId>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+
+        <!-- For annotations like @Service, @Configuration -->
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
+
+        <!-- Logging -->
         <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId> <!-- for JSON parsing -->
-            <version>0.11.5</version>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
         </dependency>
     </dependencies>
     <build>

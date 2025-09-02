@@ -26,6 +26,7 @@
         <module>user-service</module>
         <module>task-service</module>
         <module>api-gateway-service</module>
+        <module>redis-service</module>
     </modules>
     <scm>
 		<connection/>

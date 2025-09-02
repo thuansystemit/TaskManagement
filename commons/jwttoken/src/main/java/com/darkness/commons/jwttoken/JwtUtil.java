@@ -1,6 +1,5 @@
-package com.darkness.userService.common;
+package com.darkness.commons.jwttoken;
 
-import com.darkness.userService.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

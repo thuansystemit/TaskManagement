@@ -1,5 +1,6 @@
 package com.darkness.commons.security.config;
 
+import com.darkness.redisService.service.RedisService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -23,20 +24,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Value("${jwt.secret}")
     private String secretKey;
+    private final RedisService redisService;
+
+    public JwtAuthFilter(final RedisService redisService) {
+        this.redisService = redisService;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String path = request.getServletPath();
-
-        // Skip JWT validation for public endpoints
-        if (path.startsWith("/api/auth")
-                || path.startsWith("/api/user/register")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -45,7 +43,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
-
+        if (redisService.hasKey("blacklist:" + token)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
         try {
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))

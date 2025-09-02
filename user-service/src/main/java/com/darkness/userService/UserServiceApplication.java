@@ -10,7 +10,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @SpringBootApplication
 @EnableMethodSecurity
 @Import(value = {SecurityConfig.class})
-@ComponentScan(value = {"com.darkness.userService.*", "com.darkness.commons.security.*"})
+@ComponentScan(value = {"com.darkness.userService.*",
+        "com.darkness.redisService.*",
+        "com.darkness.commons.*"})
 public class UserServiceApplication {
     public static void main(String []args) {
         SpringApplication.run(UserServiceApplication.class, args);

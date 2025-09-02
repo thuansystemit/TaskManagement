@@ -34,6 +34,18 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  redis-service:
+    image: redis:7.0
+    container_name: redis
+    command: >
+      redis-server 
+      --user user1 on >password allcommands allkeys
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-service-data:/data
+
 volumes:
   user-service-data:
   task-service-data:
+  redis-service-data:
