@@ -6,7 +6,9 @@ import com.darkness.taskService.repository.TaskRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/**
+ * @author darkness
+ **/
 @Service
 public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;

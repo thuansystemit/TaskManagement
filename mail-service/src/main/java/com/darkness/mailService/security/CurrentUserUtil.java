@@ -2,7 +2,9 @@ package com.darkness.mailService.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
+/**
+ * @author darkness
+ **/
 public class CurrentUserUtil {
 
     /**

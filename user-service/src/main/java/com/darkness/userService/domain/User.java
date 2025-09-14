@@ -15,7 +15,9 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-
+/**
+ * @author darkness
+ **/
 @Entity
 @Table(name = "user")
 @Data

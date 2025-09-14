@@ -10,7 +10,9 @@ import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 
-
+/**
+ * @author darkness
+ **/
 @RestController
 public class UserExceptionController extends BaseController {
     @ExceptionHandler(UserNotFoundException.class)

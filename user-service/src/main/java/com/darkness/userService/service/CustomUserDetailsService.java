@@ -1,14 +1,15 @@
 package com.darkness.userService.service;
 
-import com.darkness.userService.domain.User;
+
 import com.darkness.userService.repository.UserRepository;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
+/**
+ * @author darkness
+ **/
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 

@@ -10,6 +10,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * @author darkness
+ **/
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;

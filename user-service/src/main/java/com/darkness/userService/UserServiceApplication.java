@@ -7,7 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-
+/**
+ * @author darkness
+ **/
 @SpringBootApplication
 @EnableMethodSecurity
 @Import(value = {GlobalSecurityConfig.class, SecurityConfig.class})

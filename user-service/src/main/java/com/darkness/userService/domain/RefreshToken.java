@@ -12,7 +12,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
-
+/**
+ * @author darkness
+ **/
 @Entity
 @Table(name = "refresh_token")
 @Getter

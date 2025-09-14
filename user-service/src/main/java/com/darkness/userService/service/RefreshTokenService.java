@@ -5,6 +5,9 @@ import com.darkness.userService.domain.User;
 
 import java.util.Optional;
 
+/**
+ * @author darkness
+ **/
 public interface RefreshTokenService {
     Optional<RefreshToken> findByToken(String token);
     RefreshToken save(String token, User user);

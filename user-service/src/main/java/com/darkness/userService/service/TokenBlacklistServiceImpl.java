@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
+/**
+ * @author darkness
+ **/
 @Service
 public class TokenBlacklistServiceImpl implements TokenBlacklistService {
     private final RedisService redisService;

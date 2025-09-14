@@ -14,7 +14,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-
+/**
+ * @author darkness
+ **/
 @Entity
 @Table(name = "message_recipients")
 @Getter

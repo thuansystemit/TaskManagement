@@ -10,6 +10,9 @@ import org.springframework.context.annotation.Import;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+/**
+ * @author darkness
+ **/
 @SpringBootApplication
 @Import(value = {GlobalSecurityConfig.class,
         GatewayCorsConfig.class})

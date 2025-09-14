@@ -10,7 +10,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
+/**
+ * @author darkness
+ **/
 @Entity
 @Table(name = "message_attachments")
 @Getter

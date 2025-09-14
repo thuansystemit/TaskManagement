@@ -4,7 +4,9 @@ import com.darkness.taskService.domain.Task;
 import com.darkness.taskService.domain.TaskStatusEnum;
 
 import java.util.List;
-
+/**
+ * @author darkness
+ **/
 public interface TaskService {
     Task createTask(Task task);
     Task updateTask(Long id, Task task);
