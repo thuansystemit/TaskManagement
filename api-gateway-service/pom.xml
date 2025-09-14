@@ -41,6 +41,16 @@
             <artifactId>task-management-commons-security</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.darkness</groupId>-->
+<!--            <artifactId>task-management-commons-openfeign</artifactId>-->
+<!--            <version>1.0.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>com.darkness</groupId>
+            <artifactId>task-management-commons-dto</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>

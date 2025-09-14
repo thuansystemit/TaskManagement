@@ -3,6 +3,7 @@ package com.darkness.userService.service;
 import com.darkness.userService.domain.RefreshToken;
 import com.darkness.userService.domain.User;
 import com.darkness.userService.repository.RefreshTokenRepository;
+import com.darkness.userService.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -11,9 +12,12 @@ import java.util.Optional;
 @Service
 public class RefreshTokenServiceImpl implements RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
 
-    public RefreshTokenServiceImpl(final RefreshTokenRepository refreshTokenRepository) {
+    public RefreshTokenServiceImpl(final RefreshTokenRepository refreshTokenRepository,
+                   final UserRepository userRepository) {
         this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -23,9 +27,12 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public RefreshToken save(String token, User user) {
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setToken(token);
+        Optional<RefreshToken> existing = refreshTokenRepository.findByUser(user);
+
+        RefreshToken refreshToken = existing.orElse(new RefreshToken());
         refreshToken.setUser(user);
+        refreshToken.setToken(token);
+        refreshToken.setRevoked(false);
         refreshToken.setExpiryDate(
                 Instant.now().plus(30, ChronoUnit.MINUTES));
         return refreshTokenRepository.save(refreshToken);
@@ -53,5 +60,11 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     // Delete all refresh tokens for user (logout everywhere)
     public void deleteByUser(User user) {
         refreshTokenRepository.deleteByUser(user);
+    }
+
+    @Override
+    public RefreshToken save(String token, String email) {
+        User user = userRepository.findByEmail(email).get();
+        return save(token, user);
     }
 }

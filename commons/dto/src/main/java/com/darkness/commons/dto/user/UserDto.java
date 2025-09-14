@@ -1,6 +1,5 @@
-package com.darkness.userService.dto;
+package com.darkness.commons.dto.user;
 
-import com.darkness.userService.domain.UserRoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,5 +20,6 @@ public class UserDto {
     private String email;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private UserRoleEnum userRole;
+    private String userRole;
+    private String password;
 }

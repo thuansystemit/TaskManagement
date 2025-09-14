@@ -5,14 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.darkness</groupId>
-        <artifactId>task-management-commons</artifactId>
+        <artifactId>task-management</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <packaging>jar</packaging>
     <name>Task Management Commons Security</name>
-    <artifactId>task-management-commons-security</artifactId>
+    <artifactId>task-management-commons-openfeign</artifactId>
 
     <properties>
+        <spring-cloud.version>2025.0.0</spring-cloud.version>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,30 +21,21 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.darkness</groupId>
-            <artifactId>task-management-commons-mvc</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.darkness</groupId>
-            <artifactId>task-management-commons-jwttoken</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.darkness</groupId>
-            <artifactId>task-management-redis-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.darkness</groupId>
-            <artifactId>task-management-commons-openfeign</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>

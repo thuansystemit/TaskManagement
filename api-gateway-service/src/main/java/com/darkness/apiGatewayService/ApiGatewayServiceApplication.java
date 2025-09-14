@@ -1,7 +1,7 @@
 package com.darkness.apiGatewayService;
 
 import com.darkness.apiGatewayService.config.GatewayCorsConfig;
-import com.darkness.commons.security.config.SecurityConfig;
+import com.darkness.commons.security.config.GlobalSecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,7 +11,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @SpringBootApplication
-@Import(value = {SecurityConfig.class,
+@Import(value = {GlobalSecurityConfig.class,
         GatewayCorsConfig.class})
 @ComponentScan(value = {"com.darkness.commons.security.*",
         "com.darkness.redisService.*"})

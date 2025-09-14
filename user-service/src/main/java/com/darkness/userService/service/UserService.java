@@ -1,5 +1,6 @@
 package com.darkness.userService.service;
 
+import com.darkness.commons.dto.user.UserDto;
 import com.darkness.userService.domain.User;
 
 import java.util.List;

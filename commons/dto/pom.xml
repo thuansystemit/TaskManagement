@@ -7,21 +7,25 @@
         <groupId>com.darkness</groupId>
         <artifactId>task-management</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
-    <name>task-management-commons</name>
-    <artifactId>task-management-commons</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>db</module>
-        <module>mvc</module>
-        <module>jwttoken</module>
-        <module>dto</module>
-        <module>openfeign</module>
-        <module>security</module>
-    </modules>
+    <packaging>jar</packaging>
+    <name>Task Management Commons Security</name>
+    <artifactId>task-management-commons-dto</artifactId>
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

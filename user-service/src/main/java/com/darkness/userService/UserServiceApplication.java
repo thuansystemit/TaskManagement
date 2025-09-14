@@ -1,6 +1,7 @@
 package com.darkness.userService;
 
-import com.darkness.commons.security.config.SecurityConfig;
+import com.darkness.commons.security.config.GlobalSecurityConfig;
+import com.darkness.userService.config.SecurityConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -9,7 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 
 @SpringBootApplication
 @EnableMethodSecurity
-@Import(value = {SecurityConfig.class})
+@Import(value = {GlobalSecurityConfig.class, SecurityConfig.class})
 @ComponentScan(value = {"com.darkness.userService.*",
         "com.darkness.redisService.*",
         "com.darkness.commons.*"})

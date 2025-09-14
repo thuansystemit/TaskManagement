@@ -2,19 +2,22 @@ package com.darkness.userService.controller;
 
 import com.darkness.commons.security.utils.PasswordUtils;
 import com.darkness.commons.jwttoken.JwtUtil;
+import com.darkness.mvc.controller.BaseController;
 import com.darkness.userService.domain.User;
-import com.darkness.userService.dto.TokenRefreshRequestDto;
-import com.darkness.userService.exception.UserNotFoundException;
+import com.darkness.userService.repository.UserRepository;
 import com.darkness.userService.service.RefreshTokenService;
 import com.darkness.userService.service.TokenBlacklistService;
-import com.darkness.userService.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,44 +33,44 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(AuthController.REQUEST_MAPPING)
-public class AuthController extends UserExceptionController {
+public class AuthController extends BaseController {
     private static final String REFRESH_TOKEN = "refreshToken";
     private static final String ACCESS_TOKEN = "accessToken";
     private static final String STRICT = "Strict";
     public static final String REQUEST_MAPPING = "/api/auth";
-    private final UserService userService;
     private final JwtUtil jwtUtil;
-    private final PasswordUtils passwordUtils;
     private final RefreshTokenService refreshTokenService;
     private final TokenBlacklistService tokenBlacklistService;
-    public AuthController(final UserService userService,
-                          final JwtUtil jwtUtil,
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    public AuthController(final JwtUtil jwtUtil,
                           final PasswordUtils passwordUtils,
                           final RefreshTokenService refreshTokenService,
-                          final TokenBlacklistService tokenBlacklistService) {
-        this.userService = userService;
+                          final TokenBlacklistService tokenBlacklistService,
+                          final AuthenticationManager authenticationManager,
+                          final UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
-        this.passwordUtils = passwordUtils;
         this.refreshTokenService = refreshTokenService;
         this.tokenBlacklistService = tokenBlacklistService;
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
     }
     @PostMapping("login")
     public ResponseEntity<Map<String, String>> login(
-            @RequestBody Map<String, String> request, HttpServletResponse response) {
+            @RequestBody Map<String, String> request,
+            HttpServletResponse response) throws UsernameNotFoundException {
         String email = request.get("email");
         String password = request.get("password");
-        User user = userService.getUserByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-
-        if (!passwordUtils.matches(password, user.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
+        UsernamePasswordAuthenticationToken authInputToken =
+                new UsernamePasswordAuthenticationToken(email, password);
+        authenticationManager.authenticate(authInputToken);
+        User user = userRepository.findByEmail(email).get();
         String accessToken = jwtUtil.generateToken(
-                user.getEmail(), user.getUserRole().name());
+                email, user.getUserRole().name());
         String refreshToken = jwtUtil.generateRefreshToken(
-                user.getEmail(), user.getUserRole().name());
-        refreshTokenService.save(refreshToken, user);
+                email, user.getUserRole().name());
+
+        refreshTokenService.save(refreshToken, email);
         ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, refreshToken)
                 .httpOnly(true)
                 .secure(true)
@@ -126,7 +129,6 @@ public class AuthController extends UserExceptionController {
                 })
                 .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
     }
-
     @PostMapping("logout")
     public ResponseEntity<Void> logout(@CookieValue(
             name = "refreshToken", required = false) String refreshToken,

@@ -1,6 +1,6 @@
 package com.darkness.userService.controller;
+import com.darkness.commons.dto.user.UserDto;
 import com.darkness.userService.domain.User;
-import com.darkness.userService.dto.UserDto;
 import com.darkness.userService.exception.DuplicateUserException;
 import com.darkness.userService.exception.UserNotFoundException;
 import com.darkness.userService.service.UserService;
@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,19 +55,20 @@ public class UserController extends UserExceptionController {
     }
 
     // Get user by ID
-    @PreAuthorize("hasAnyRole('USER', 'TEAM_LEAD', 'PROJECT_MANAGER')")
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable String userId) {
-        Optional<User> existingUsers = userService.getUserByUserId(userId);
-        if (existingUsers.isPresent()) {
-            return ResponseEntity.ok(convertToDto(existingUsers.get()));
-        }
-        throw new UserNotFoundException("User not found");
-    }
+//    @PreAuthorize("hasAnyRole('USER', 'TEAM_LEAD', 'PROJECT_MANAGER')")
+//    @GetMapping("/me")
+//    public ResponseEntity<UserDto> getUserById() {
+//        System.out.printf("hello");
+////        Optional<User> existingUsers = userService.getUserByEmail(email);
+////        if (existingUsers.isPresent()) {
+////            return ResponseEntity.ok(convertToDto(existingUsers.get()));
+////        }
+//        throw new UserNotFoundException("User not found");
+//    }
 
     // Get user by email
     @PreAuthorize("hasAnyRole('USER', 'TEAM_LEAD', 'PROJECT_MANAGER')")
-    @GetMapping("/email")
+    @GetMapping("email")
     public ResponseEntity<User> getUserByEmail(@RequestParam String email) {
         return userService.getUserByEmail(email)
                 .map(ResponseEntity::ok)
@@ -110,7 +112,7 @@ public class UserController extends UserExceptionController {
         return UserDto.builder()
                 .pk(createdUser.getPk())
                 .userId(createdUser.getUserId())
-                .userRole(createdUser.getUserRole())
+                .userRole(createdUser.getUserRole().name())
                 .createdDate(createdUser.getCreatedDate())
                 .updatedDate(createdUser.getUpdatedDate())
                 .name(createdUser.getName())
