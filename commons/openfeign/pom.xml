@@ -9,7 +9,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
     <packaging>jar</packaging>
-    <name>Task Management Commons Security</name>
+    <name>Task Management Commons openfeign</name>
     <artifactId>task-management-commons-openfeign</artifactId>
 
     <properties>
