@@ -4,11 +4,16 @@ import com.darkness.mvc.controller.BaseController;
 import com.darkness.mvc.dto.ErrorResponse;
 import com.darkness.userService.exception.DuplicateUserException;
 import com.darkness.userService.exception.UserNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author darkness
@@ -37,5 +42,18 @@ public class UserExceptionController extends BaseController {
         ErrorResponse error = new ErrorResponse("User don't have permission to access this api.", e.getMessage());
         error.setErrorCode(HttpStatus.FORBIDDEN.value());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Map<String, String>> handleConstraintViolationException(ConstraintViolationException ex) {
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getConstraintViolations().forEach(violation -> {
+            String fieldName = violation.getPropertyPath().toString();
+            String message   = violation.getMessage();
+            errors.put(fieldName, message);
+        });
+
+        return ResponseEntity.badRequest().body(errors);
     }
 }

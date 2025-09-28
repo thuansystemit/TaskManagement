@@ -4,12 +4,14 @@ import com.darkness.userService.domain.User;
 import com.darkness.userService.exception.DuplicateUserException;
 import com.darkness.userService.exception.UserNotFoundException;
 import com.darkness.userService.service.UserService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +26,7 @@ import java.util.Optional;
 /**
  * @author darkness
  **/
+@Validated
 @RestController
 @RequestMapping("/api/user")
 public class UserController extends UserExceptionController {
@@ -37,7 +40,7 @@ public class UserController extends UserExceptionController {
 
     // Create a new user
     @PostMapping("register")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         LOGGER.info(String.format("Starting create user %s", userDto.getEmail()));
         Optional<User> userExistingOptional = userService.getUserByEmail(userDto.getEmail());
         validateUser(userExistingOptional, userDto.getEmail());

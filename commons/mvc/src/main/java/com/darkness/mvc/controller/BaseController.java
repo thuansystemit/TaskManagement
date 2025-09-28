@@ -5,6 +5,7 @@ import com.darkness.mvc.dto.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,10 +29,11 @@ public abstract class BaseController {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
         String message = e.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .map(error -> error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
         ErrorResponse error = new ErrorResponse("Validation Error", message);
+        error.setErrorCode(HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(error);
     }
 
