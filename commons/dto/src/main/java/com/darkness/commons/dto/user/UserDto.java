@@ -18,10 +18,10 @@ import java.time.LocalDateTime;
 public class UserDto {
     private Long pk;
     private String userId;
-    private String name;
     private String email;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String userRole;
     private String password;
+    private IdentificationDto identificationDto;
 }

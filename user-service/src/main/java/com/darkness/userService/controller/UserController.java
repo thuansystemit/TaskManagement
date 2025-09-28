@@ -37,13 +37,13 @@ public class UserController extends UserExceptionController {
 
     // Create a new user
     @PostMapping("register")
-    public ResponseEntity<UserDto> createUser(@RequestBody User user) {
-        LOGGER.info(String.format("Starting create user %s", user.getEmail()));
-        Optional<User> userExistingOptional = userService.getUserByEmail(user.getEmail());
-        validateUser(userExistingOptional, user.getEmail());
-        User createdUser = userService.createUser(user);
-        UserDto userDto = convertToDto(createdUser);
-        LOGGER.info(String.format("Done create user %s", user.getEmail()));
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        LOGGER.info(String.format("Starting create user %s", userDto.getEmail()));
+        Optional<User> userExistingOptional = userService.getUserByEmail(userDto.getEmail());
+        validateUser(userExistingOptional, userDto.getEmail());
+        User createdUser = userService.createUser(userDto);
+        UserDto result = convertToDto(createdUser);
+        LOGGER.info(String.format("Done create user %s", userDto.getEmail()));
         return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
@@ -82,10 +82,10 @@ public class UserController extends UserExceptionController {
     public ResponseEntity<User> updateUser(@PathVariable String userId, @RequestBody User user) {
         return userService.getUserByUserId(userId)
                 .map(existing -> {
-                    existing.setName(user.getName());
+//                    existing.setName(user.getName());
                     existing.setEmail(user.getEmail());
                     existing.setPassword(user.getPassword());
-                    User updatedUser = userService.createUser(existing);
+                    User updatedUser = userService.updateUser(existing);
                     return ResponseEntity.ok(updatedUser);
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -116,7 +116,7 @@ public class UserController extends UserExceptionController {
                 .userRole(createdUser.getUserRole().name())
                 .createdDate(createdUser.getCreatedDate())
                 .updatedDate(createdUser.getUpdatedDate())
-                .name(createdUser.getName())
+//                .name(createdUser.getName())
                 .email(createdUser.getEmail())
                 .build();
 
